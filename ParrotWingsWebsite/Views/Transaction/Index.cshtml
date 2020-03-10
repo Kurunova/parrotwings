@@ -1,0 +1,5 @@
+﻿@{ Html.RenderPartial("CreateTransaction"); }
+
+<div id="UserTransactionsComponentContainer">
+    @await Component.InvokeAsync("UserTransactions", new { user = User })
+</div>

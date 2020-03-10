@@ -1,0 +1,38 @@
+﻿@model BusinessLogicLayer.Models.User
+@{
+    ViewData["Title"] = "Sign in";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<div>
+    @using (Html.BeginForm("SignIn", "User", FormMethod.Post))
+    {
+    <div class="registration-form">
+        <p>
+            @Html.LabelFor(p => p.Email)
+            @Html.TextBoxFor(p => p.Email)
+            <br />
+            @Html.ValidationMessageFor(p => p.Email)
+        </p>
+
+        <p>
+            @Html.LabelFor(p => p.Password)
+            @Html.PasswordFor(p => p.Password)
+            <br />
+            @Html.ValidationMessageFor(p => p.Password)
+        </p>
+
+        @Html.ValidationMessage("General")
+    </div>
+    <div class="">
+        <button type="submit" autocomplete="off">Ok</button>
+    </div>
+    }
+</div>
+
+<style>
+    .registration-form label {
+        width: 130px;
+    }
+</style>

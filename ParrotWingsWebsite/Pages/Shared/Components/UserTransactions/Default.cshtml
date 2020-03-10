@@ -1,0 +1,34 @@
+﻿@model System.Collections.Generic.IEnumerable<BusinessLogicLayer.Models.UserTransaction>
+
+@{
+    ViewData["Title"] = "Last transactions";
+}
+<br/>
+<h3>@ViewData["Title"]</h3>
+<table class="user-transaction-table">
+    <tr>
+        <th>Date</th>
+        <th>Correspondent name</th>
+        <th>Amount</th>
+        <th>Balance</th>
+    </tr>
+    @if(Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CreatedAt</td>
+                <td>@item.CorrespondentName</td>
+                <td>@item.AmountSting</td>
+                <td>@item.Balance</td>
+            </tr>
+        }
+    }
+</table>
+
+<style>
+    .user-transaction-table th,
+    .user-transaction-table td {
+        padding: 5px 10px;
+    }
+</style>

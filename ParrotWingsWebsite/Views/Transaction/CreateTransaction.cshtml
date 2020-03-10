@@ -1,0 +1,112 @@
+﻿@model BusinessLogicLayer.Models.Transaction
+@{
+    ViewData["Title"] = "Create transaction";
+}
+
+@using (Html.BeginForm("CreateTransaction", "Transaction", FormMethod.Post, new { id = "CreateTransactionForm" }))
+{
+    <h3>@ViewData["Title"]</h3>
+    
+    <div class="registration-form">
+        <p>
+            @Html.LabelFor(p => p.ReceiverUserName)
+            @Html.TextBoxFor(p => p.ReceiverUserName, new { id="autocomplete", placeholder="enter name" })
+            <br />
+            @Html.ValidationMessageFor(p => p.ReceiverUserName)
+            <div id="userList"></div>
+            <script>
+                $("#autocomplete").autocomplete({
+                    appendTo: "#userList",
+                    source: function (request, response) {
+                        $.ajax({
+                            url: "/user/GetUserByPartOfName",
+                            data: {
+                                partOfName: request.term
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    open: function (request, response) {
+                        $.ajax({
+                            url: "/user/GetUserTop",
+                            data: {
+                                count: 10
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    create: function (request, response) {
+                        $.ajax({
+                            url: "/user/GetUserTop",
+                            data: {
+                                count: 10
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    }
+                });
+            </script>
+        </p>
+        
+        <p>
+            @Html.LabelFor(p => p.Amount)
+            @Html.TextBoxFor(p => p.Amount)
+            <br/>
+            @Html.ValidationMessageFor(p => p.Amount)
+        </p>
+        
+        @Html.ValidationMessage("General")
+    </div>
+    <div class="">
+        <button type="submit" autocomplete="off">Ok</button>
+    </div>
+    
+    <script>
+        $("#CreateTransactionForm").submit(function (e) {
+            e.preventDefault();
+            var url = $(this).attr("action");
+            
+            var element = document.activeElement;
+            var button = $(element);
+            button.attr("disabled", "disabled");
+
+            var form = $(this);
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                success: function (data) {
+                    form.replaceWith(data);
+                    
+                    var container = $("#UserTransactionsComponentContainer"); 
+                    $.get("/Transaction/UserTransactions", {}, function (data) { container.html(data); });
+
+                    var containerUserBalance = $("#UserBalanceComponentContainer"); 
+                    $.get("/User/UserBalance", {}, function (data) { containerUserBalance.html(data); });
+                    
+                },
+                complete: function () {
+                    button.removeAttr("disabled");
+                },
+                error: function () {
+                    alert("An error occured, please contacts developer");
+                    button.removeAttr("disabled");
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .registration-form label {
+            width: 130px;
+        }
+    </style>
+}
